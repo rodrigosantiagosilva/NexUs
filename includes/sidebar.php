@@ -32,7 +32,7 @@ $usuarioFoto = $_SESSION['usuario_foto'] ?? 'https://i.pravatar.cc/150?img=56';
 
 <nav class="sidebar d-flex flex-column p-3">
   <a href="#" class="d-flex align-items-center mb-4 text-decoration-none">
-    <span class="fs-4 text-danger me-1">NexUs</span><span class="fs-4 text-white">PI</span>
+    <span class="fs-4 text-danger">Nex</span><span class="fs-4 text-white">Us</span>
   </a>
 
   <?php
