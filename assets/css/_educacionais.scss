@@ -1,0 +1,394 @@
+:root {
+    --primary-color: #ff0000;
+    --primary-hover: #e60000;
+    --background-dark: #121212;
+    --card-background: #1e1e1e;
+    --card-border: #333333;
+    --text-color: #ffffff;
+    --text-secondary: #a0a0a0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+
+/* Cabeçalho de recursos */
+.resources-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.resources-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Campo de busca */
+.search-container {
+    position: relative;
+
+}
+
+.search-bar {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+/* Botão de filtros */
+.filter-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+/* Cards de filtro */
+.filter-card {
+    background-color: var(--card-background);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 15px;
+    height: 100%;
+}
+
+.filter-card h5 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: white;
+}
+
+/* Botões de opção de filtro */
+.filter-option {
+    background-color: transparent;
+    border: none;
+    color: white;
+    text-align: left;
+    padding: 6px 10px;
+    margin-bottom: 5px;
+    width: 100%;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.filter-option:hover {
+    background-color: #333;
+}
+
+.filter-option.active {
+    background-color: var(--primary-color);
+}
+
+/* Seção de formatos */
+.format-option {
+    margin-bottom: 5px;
+}
+
+.format-badge {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Opções e form select */
+.text-secondary-custom {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.form-select {
+    background-color: #333;
+    border: 1px solid #444;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.form-check-input {
+    margin-right: 8px;
+}
+
+/* Seção de informações */
+.info-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+}
+
+/* Ícones de categoria */
+.categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.category-item {
+    text-align: center;
+    width: 45px;
+}
+
+.resource-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin: 0 auto 5px;
+}
+
+.icon-blue {
+    background-color: #2271b1;
+}
+
+.icon-red {
+    background-color: #ff0000;
+}
+
+.icon-yellow {
+    background-color: #e6b400;
+}
+
+.icon-green {
+    background-color: #00d084;
+}
+
+.category-text {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+/* Barra de abas */
+.tabs-row {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding: 5px 0;
+}
+
+.tab-button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.tab-button.active {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.tab-button.secondary {
+    background-color: #222;
+    color: white;
+    border: 1px solid #444;
+}
+
+/* Cards de recursos */
+.resource-card {
+    background-color: var(--card-background);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.card-header {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.card-title-area {
+    flex-grow: 1;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #333;
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.card-description {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.card-author {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.card-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.card-divider {
+    height: 1px;
+    background-color: #333;
+    margin: 12px 0;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.action-btn {
+    padding: 6px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.icon-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-btn {
+    width: 32px;
+    height: 32px;
+    background-color: #222;
+    border: 1px solid #444;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+/* Classes de utilidade */
+.footer-tabs {
+    display: flex;
+    overflow-x: none;
+    gap: 20px;
+    margin-bottom: 15px;
+    justify-content: center;
+
+}
+
+.footer-tab {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    font-size: 13px;
+    color: white;
+    padding: 5px 12px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+.footer-tab:hover,
+.footer-tab:focus {
+    background-color: #e60000;
+    outline: none;
+}
+.footer-tab.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+}
+
+.footer-tab-icon {
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+
+
+
+.content-wrapper {
+    align-self: center;
+    margin-left: 290px;
+    padding: 20px;
+    width: calc(80%);
+}
+
+.search-container-education {
+    margin-left: 0% !important;
+    max-width: 200px;
+}

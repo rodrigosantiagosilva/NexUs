@@ -1,0 +1,407 @@
+
+:root {
+    --background-dark: #000000;
+    --card-background: #161616;
+    --card-hover: #1d1d1d;
+    --card-border: #2a2a2a;
+    --primary-color: #ff0000;
+    --text-color: #ffffff;
+    --text-secondary: #9e9e9e;
+    --purple-badge: #c56cf0;
+    --orange-badge: #ffb74d;
+    --red-badge: #ff5252;
+    --green-badge: #00c853;
+    --blue-badge: #1e90ff;
+    --tag-background: #2d2d2d;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+/* Layout principal */
+.content-wrapper {
+    padding: 15px 20px;
+}
+
+/* Cabeçalho de comunidades */
+.communities-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.communities-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+/* Campo de busca */
+.search-container {
+    position: relative;
+    flex-grow: 1;
+    max-width: 220px;
+    margin-right: 10px;
+}
+
+.search-input {
+    background-color: #2a2a2a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px 8px 32px;
+    font-size: 14px;
+    width: 100%;
+    height: 32px;
+}
+
+.search-input::placeholder {
+    color: #888;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+/* Botão de criar grupo */
+.create-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    height: 32px;
+}
+
+/* Tabs de navegação */
+.nav-tabs {
+    display: flex;
+    background-color: #161616;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.nav-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.nav-tab.active {
+    background-color: var(--primary-color);
+}
+
+/* Cards de grupo */
+.group-card {
+    background-color: var(--card-background) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 6px !important;
+    padding: 15px !important;
+    margin-bottom: 15px !important;
+    overflow: hidden !important;
+}
+
+.group-header {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.group-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.group-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.group-info {
+    flex-grow: 1;
+}
+
+.group-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #fff;
+}
+
+.group-meta {
+    color: var(--text-secondary);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.group-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    background-color: #2d2d2d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.tag {
+    display: inline-flex !important;
+    align-items: center !important;
+    background-color: var(--tag-background) !important;
+    color: white !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    margin-right: 5px !important;
+    margin-bottom: 5px !important;
+}
+
+.badge-conversation {
+    background-color: #3498db; /* Azul */
+}
+
+.badge-education {
+    background-color: #2ecc71; /* Verde */
+}
+
+.badge-workshop {
+    background-color: var(--purple-badge);
+}
+
+.badge-study {
+    background-color: var(--orange-badge);
+}
+
+.badge-debate {
+    background-color: var(--red-badge);
+}
+
+.group-description {
+    font-size: 13px;
+    color: #e0e0e0;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 8px 0 12px;
+}
+
+.join-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Notificação de novos posts */
+.notification-badge {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+/* Cards de eventos */
+.event-card {
+    background-color: var(--card-background) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 6px !important;
+    padding: 15px !important;
+    margin-bottom: 15px !important;
+}
+
+/* Grid de eventos */
+.events-grid-container {
+    width: 100% !important;
+}
+
+.events-grid-item {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Ajustes de badges para eventos */
+.event-badges {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+/* Ícone quadrado */
+.icon-square {
+    border-radius: 4px !important;
+}
+
+.event-header {
+    display: flex;
+    margin-bottom: 10px;
+    align-items: flex-start;
+}
+
+.event-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-right: 12px !important;
+    flex-shrink: 0 !important;
+    font-size: 18px !important;
+}
+
+.progress-bar {
+    height: 3px !important;
+    background-color: #2d2d2d !important;
+    border-radius: 1.5px !important;
+    margin-top: 10px !important;
+    margin-bottom: 3px !important;
+    overflow: hidden !important;
+    width: 100% !important;
+}
+
+.progress-fill {
+    height: 100% !important;
+    border-radius: 1.5px !important;
+}
+
+.progress-fill.purple {
+    background-color: var(--purple-badge) !important;
+    width: 80% !important;
+}
+
+.progress-fill.orange {
+    background-color: var(--orange-badge) !important;
+    width: 53% !important;
+}
+
+.progress-fill.red {
+    background-color: var(--red-badge) !important;
+    width: 53% !important;
+}
+
+.participants-count {
+    text-align: right !important;
+    font-size: 11px !important;
+    color: var(--text-secondary) !important;
+}
+
+.active-time {
+    font-size: 12px !important;
+    color: var(--text-secondary) !important;
+}
+
+.member-badge {
+    background-color: #800000 !important;
+    color: white !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    padding: 1px 6px !important;
+    border-radius: 3px !important;
+    margin-right: 8px !important;
+}
+
+.admin-badge {
+    background-color: #800000 !important;
+    color: white !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    padding: 1px 6px !important;
+    border-radius: 3px !important;
+    margin-right: 8px !important;
+}
+
+.calendar-icon {
+    margin-right: 4px !important;
+}
+
+.event-date {
+    font-size: 12px !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Ícones específicos */
+.icon-blue {
+    background-color: #1e88e5 !important;
+}
+
+.icon-green {
+    background-color: #2ecc71 !important;
+}
+
+.icon-purple {
+    background-color: var(--purple-badge) !important;
+}
+
+.icon-orange {
+    background-color: var(--orange-badge) !important;
+}
+
+.icon-red {
+    background-color: var(--red-badge) !important;
+}
+
+/* Barra de progresso com cores específicas */
+.progress-blue {
+    background-color: #1e88e5 !important;
+}
+
+.progress-green {
+    background-color: #2ecc71 !important;
+}
+
+
+.search-container-comunition {
+    margin-left: 0;
+}

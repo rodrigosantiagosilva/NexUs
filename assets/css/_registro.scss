@@ -1,0 +1,83 @@
+/* Adições CSS para a página de registro */
+
+/* Essas são adições específicas ao CSS já fornecido anteriormente */
+
+/* Ajustes para campos adicionais no formulário de registro */
+.login-card {
+    /* Aumentar um pouco a altura máxima para acomodar mais campos */
+    max-width: 450px;
+  }
+  
+  /* Estilização específica para o checkbox de termos */
+  .terms-checkbox {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Destaque para links de termos */
+  .terms-link {
+    color: var(--primary);
+    text-decoration: none;
+  }
+  
+  .terms-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Ajustes de espaçamento para formulário de registro */
+  .register-form .form-group {
+    margin-bottom: 1.25rem; /* Um pouco menos de espaço entre campos para caber mais campos */
+  }
+  
+  /* Melhorar legibilidade do texto dos termos */
+  .terms-text {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+  }
+  
+  /* Estilização para mensagens de validação/erro */
+  .validation-message {
+    color: var(--primary);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+  
+  /* Ajustes de responsividade para o formulário maior */
+  @media (max-width: 480px) {
+    .login-card {
+      padding: 1.5rem;
+    }
+    
+    .login-title {
+      font-size: 1.35rem;
+    }
+    
+    .login-subtitle {
+      font-size: 0.9rem;
+    }
+    
+    .form-label {
+      font-size: 0.9rem;
+    }
+    
+    .remember-text {
+      font-size: 0.8rem;
+    }
+  }
+  
+  /* Ajuste específico para o texto do checkbox de termos e condições */
+  .remember-me label.remember-text {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    max-width: 90%;
+  }
+  
+  /* Estilo para links dentro do texto de termos */
+  .remember-text a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+  
+  .remember-text a:hover {
+    text-decoration: underline;
+  }
