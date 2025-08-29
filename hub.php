@@ -184,6 +184,46 @@ if (!function_exists('getActiveMatches')) {
     }
 }
 
+if (!function_exists('getLastFollowedUsers')) {
+    /**
+     * Retorna os últimos usuários seguidos pelo usuário atual
+     * @param PDO $pdo
+     * @param int $userId
+     * @param int $limit
+     * @return array
+     */
+    function getLastFollowedUsers(PDO $pdo, int $userId, int $limit = 3): array {
+        $out = [];
+        try {
+            $sql = "SELECT u.idusuario, u.nome, u.foto, u.email, us.data_seguimento
+                    FROM usuario_seguidores us
+                    JOIN usuario u ON us.seguido_id = u.idusuario
+                    WHERE us.seguidor_id = :uid
+                    ORDER BY us.data_seguimento DESC
+                    LIMIT :lim";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $out[] = [
+                    'id' => (int)$r['idusuario'],
+                    'name' => $r['nome'],
+                    'username' => 'u' . $r['idusuario'],
+                    'avatar' => $r['foto'] ? $r['foto'] : 'https://i.pravatar.cc/150?u=' . $r['idusuario'],
+                    'bio' => $r['email'],
+                    'follow_date' => $r['data_seguimento'],
+                    'isUser' => true
+                ];
+            }
+        } catch (Exception $e) {
+            error_log('getLastFollowedUsers: '.$e->getMessage());
+        }
+        return $out;
+    }
+}
+
 if (!function_exists('getGroupPosts')) {
     /**
      * Retorna últimas mensagens de grupos para a timeline/destaques
@@ -282,6 +322,7 @@ function gerarAvatarGrupo(string $nomeGrupo): string {
 $upcomingEvents      = getUpcomingEvents($pdo, 8);
 $userRegisteredEvents = getUserRegisteredEvents($pdo, $usuarioAtualId, 3);
 $activeMatches       = getActiveMatches($pdo, $usuarioAtualId, 8);
+$lastFollowedUsers   = getLastFollowedUsers($pdo, $usuarioAtualId, 3);
 $posts               = getGroupPosts($pdo, 8);
 $pendingConnections  = getPendingConnections($pdo, $usuarioAtualId, 6);
 
@@ -315,11 +356,11 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
     .vh-minus-0 { min-height: 100vh; }
     .truncate-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .badge-inscrito { background-color: #198754; }
+    .badge-seguindo { background-color: #0d6efd; }
   </style>
 </head>
 <body>
-<?php // include header/sidebar se existirem ?>
-<?php if (file_exists('includes/header.php')) include 'includes/header.php'; ?>
+<?php include 'includes/header.php'; ?>
 <div class="d-flex vh-minus-0">
   <?php if (file_exists('includes/sidebar.php')): ?>
     <?php include 'includes/sidebar.php'; ?>
@@ -360,53 +401,66 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
                 <a href="eventos.php" class="alert-link">Explore os eventos disponíveis</a>.
               </div>
             </div>
-          <?php endif; ?>
-
-          <?php foreach ($userRegisteredEvents as $event):
-            $borderClass = ($event['priority'] === 'high') ? 'border-priority-high' : (($event['priority'] === 'medium') ? 'border-priority-medium' : 'border-priority-low');
-          ?>
-            <div class="col-12 col-md-4">
-              <div class="card card-custom <?= e($borderClass) ?>">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-start mb-2">
-                    <h5 class="card-title mb-1"><?= e($event['title']) ?></h5>
-                    <span class="badge badge-inscrito">Inscrito</span>
+          <?php else: ?>
+            <?php foreach ($userRegisteredEvents as $event):
+              $borderClass = ($event['priority'] === 'high') ? 'border-priority-high' : (($event['priority'] === 'medium') ? 'border-priority-medium' : 'border-priority-low');
+            ?>
+              <div class="col-12 col-md-4">
+                <div class="card card-custom <?= e($borderClass) ?>">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <h5 class="card-title mb-1"><?= e($event['title']) ?></h5>
+                      <span class="badge badge-inscrito">Inscrito</span>
+                    </div>
+                    <p class="card-text text-secondary-custom mb-2"><?= e($event['subject']) ?></p>
+                    <p class="text-secondary-custom mb-0"><i class="fas fa-calendar-check me-1"></i><?= e($event['date']) ?></p>
+                    <small class="text-muted">Inscrito em: <?= date('d/m/Y', strtotime($event['registration_date'])) ?></small>
                   </div>
-                  <p class="card-text text-secondary-custom mb-2"><?= e($event['subject']) ?></p>
-                  <p class="text-secondary-custom mb-0"><i class="fas fa-calendar-check me-1"></i><?= e($event['date']) ?></p>
-                  <small class="text-muted">Inscrito em: <?= date('d/m/Y', strtotime($event['registration_date'])) ?></small>
                 </div>
               </div>
-            </div>
-          <?php endforeach; ?>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </div>
       </section>
 
-      <!-- Eventos Acadêmicos -->
+      <!-- Últimos Usuários Seguidos -->
       <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="mb-0"><i class="fas fa-graduation-cap me-2 text-secondary-custom"></i>Eventos Acadêmicos</h4>
-          <a href="eventos.php" class="text-danger">Ver todos</a>
+          <h4 class="mb-0"><i class="fas fa-user-plus me-2 text-secondary-custom"></i>Últimos Seguidos</h4>
+          <a href="conexoes.php" class="text-danger">Ver todos</a>
         </div>
 
         <div class="row g-4">
-          <?php if (empty($upcomingEvents)): ?>
-            <div class="col-12"><div class="alert alert-info mb-0">Nenhum evento acadêmico próximo encontrado.</div></div>
-          <?php endif; ?>
-
-          <?php foreach ($upcomingEvents as $event):
-            $borderClass = ($event['priority'] === 'high') ? 'border-priority-high' : (($event['priority'] === 'medium') ? 'border-priority-medium' : 'border-priority-low');
-          ?>
-            <div class="col-12 col-md-4">
-              <div class="card card-custom <?= e($borderClass) ?>">
-                <div class="card-body">
-                  <h5 class="card-title mb-1"><?= e($event['title']) ?></h5>
-                  <p class="card-text text-secondary-custom mb-2"><?= e($event['subject']) ?></p>
-                  <p class="text-secondary-custom mb-0"><i class="fas fa-calendar-check me-1"></i><?= e($event['date']) ?></p>
-                </div>
+          <?php if (empty($lastFollowedUsers)): ?>
+            <div class="col-12">
+              <div class="alert alert-info mb-0">
+                <i class="fas fa-info-circle me-2"></i>
+                Você ainda não seguiu nenhum usuário.
+                <a href="descobrir.php" class="alert-link">Encontre novos usuários</a>.
               </div>
             </div>
-          <?php endforeach; ?>
+          <?php else: ?>
+            <?php foreach ($lastFollowedUsers as $user): ?>
+              <div class="col-12 col-md-4">
+                <div class="card card-custom">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                      <img src="<?= e($user['avatar']) ?>" class="rounded-circle me-3" width="50" height="50" alt="avatar">
+                      <div>
+                        <h6 class="mb-0"><?= e($user['name']) ?></h6>
+                        <small class="text-secondary-custom">@<?= e($user['username']) ?></small>
+                      </div>
+                    </div>
+                    <p class="text-secondary-custom mb-2 truncate-2"><?= e($user['bio']) ?></p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="badge badge-seguindo">Seguindo</span>
+                      <small class="text-muted">Desde: <?= date('d/m/Y', strtotime($user['follow_date'])) ?></small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </div>
       </section>
 
@@ -420,31 +474,31 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         <div class="row g-4">
           <?php if (empty($activeMatches)): ?>
             <div class="col-12"><div class="alert alert-secondary mb-0">Nenhuma conversa encontrada.</div></div>
-          <?php endif; ?>
-
-          <?php foreach ($activeMatches as $match): ?>
-            <div class="col-12 col-md-6">
-              <a href="conversa.php?id=<?= e($match['id']) ?>" class="text-decoration-none text-dark">
-                <div class="card card-custom">
-                  <div class="card-body d-flex align-items-center">
-                    <div class="position-relative me-3">
-                      <img src="<?= e($match['avatar']) ?>" class="rounded-circle" width="50" height="50" alt="avatar">
-                      <?php if (isset($match['status']) && $match['status'] === 'online'): ?>
-                        <span class="bg-success rounded-circle position-absolute" style="width:10px;height:10px;bottom:2px;right:2px;border:2px solid #fff"></span>
+          <?php else: ?>
+            <?php foreach ($activeMatches as $match): ?>
+              <div class="col-12 col-md-6">
+                <a href="conversa.php?id=<?= e($match['id']) ?>" class="text-decoration-none text-dark">
+                  <div class="card card-custom">
+                    <div class="card-body d-flex align-items-center">
+                      <div class="position-relative me-3">
+                        <img src="<?= e($match['avatar']) ?>" class="rounded-circle" width="50" height="50" alt="avatar">
+                        <?php if (isset($match['status']) && $match['status'] === 'online'): ?>
+                          <span class="bg-success rounded-circle position-absolute" style="width:10px;height:10px;bottom:2px;right:2px;border:2px solid #fff"></span>
+                        <?php endif; ?>
+                      </div>
+                      <div class="flex-fill">
+                        <h6 class="mb-1"><?= e($match['name']) ?> <small class="text-secondary-custom"><?= e($match['time']) ?></small></h6>
+                        <p class="mb-0 text-secondary-custom truncate-2"><?= e($match['lastMessage']) ?></p>
+                      </div>
+                      <?php if ((int)$match['unread'] > 0): ?>
+                        <span class="badge bg-danger ms-3"><?= (int)$match['unread'] ?></span>
                       <?php endif; ?>
                     </div>
-                    <div class="flex-fill">
-                      <h6 class="mb-1"><?= e($match['name']) ?> <small class="text-secondary-custom"><?= e($match['time']) ?></small></h6>
-                      <p class="mb-0 text-secondary-custom truncate-2"><?= e($match['lastMessage']) ?></p>
-                    </div>
-                    <?php if ((int)$match['unread'] > 0): ?>
-                      <span class="badge bg-danger ms-3"><?= (int)$match['unread'] ?></span>
-                    <?php endif; ?>
                   </div>
-                </div>
-              </a>
-            </div>
-          <?php endforeach; ?>
+                </a>
+              </div>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </div>
       </section>
 
@@ -461,63 +515,67 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
           <a href="#" class="text-danger">Atualizar</a>
         </div>
         <div class="row g-3">
-          <?php foreach ($posts as $post): ?>
-            <?php
-            // Se for grupo
-            if ($post['user']['isGroup']) {
-                $nomeGrupo = $post['user']['name'];
-                $grupoId = str_replace('grupo', '', $post['user']['username']); // Extrai o ID do grupo do username
+          <?php if (empty($posts)): ?>
+            <div class="col-12"><div class="alert alert-info mb-0">Nenhuma mensagem de grupo encontrada.</div></div>
+          <?php else: ?>
+            <?php foreach ($posts as $post): ?>
+              <?php
+              // Se for grupo
+              if ($post['user']['isGroup']) {
+                  $nomeGrupo = $post['user']['name'];
+                  $grupoId = str_replace('grupo', '', $post['user']['username']); // Extrai o ID do grupo do username
 
-                // Se já foi exibido, pula
-                if (in_array($nomeGrupo, $gruposExibidos)) {
-                    continue;
-                }
+                  // Se já foi exibido, pula
+                  if (in_array($nomeGrupo, $gruposExibidos)) {
+                      continue;
+                  }
 
-                // Marca como exibido
-                $gruposExibidos[] = $nomeGrupo;
+                  // Marca como exibido
+                  $gruposExibidos[] = $nomeGrupo;
 
-                // Gerar avatar se não existir
-                if (empty($post['user']['avatar'])) {
-                    $post['user']['avatar'] = gerarAvatarGrupo($nomeGrupo);
-                }
-                
-                // Obter contagem de mensagens para este grupo
-                $totalMensagens = $msgsPorGrupo[$grupoId] ?? 0;
-            }
-            ?>
-            <div class="col-12 col-sm-6 col-lg-4">
-              <div class="card card-custom p-2 h-100" style="overflow: hidden; min-height: 180px;">
-                <div class="card-body p-2 d-flex flex-column justify-content-between">
+                  // Gerar avatar se não existir
+                  if (empty($post['user']['avatar'])) {
+                      $post['user']['avatar'] = gerarAvatarGrupo($nomeGrupo);
+                  }
                   
-                  <!-- Cabeçalho do card -->
-                  <div class="d-flex align-items-center mb-2">
-                    <img src="<?= htmlspecialchars($post['user']['avatar']) ?>" class="rounded-circle me-2" width="30" height="30">
-                    <div class="flex-fill">
-                      <h6 class="mb-0" style="font-size: 0.9rem;"><?= htmlspecialchars($post['user']['name']) ?></h6>
-                      <small class="text-secondary-custom" style="font-size: 0.75rem;">@<?= htmlspecialchars($post['user']['username']) ?> • <?= htmlspecialchars($post['time']) ?></small>
+                  // Obter contagem de mensagens para este grupo
+                  $totalMensagens = $msgsPorGrupo[$grupoId] ?? 0;
+              }
+              ?>
+              <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card card-custom p-2 h-100" style="overflow: hidden; min-height: 180px;">
+                  <div class="card-body p-2 d-flex flex-column justify-content-between">
+                    
+                    <!-- Cabeçalho do card -->
+                    <div class="d-flex align-items-center mb-2">
+                      <img src="<?= htmlspecialchars($post['user']['avatar']) ?>" class="rounded-circle me-2" width="30" height="30">
+                      <div class="flex-fill">
+                        <h6 class="mb-0" style="font-size: 0.9rem;"><?= htmlspecialchars($post['user']['name']) ?></h6>
+                        <small class="text-secondary-custom" style="font-size: 0.75rem;">@<?= htmlspecialchars($post['user']['username']) ?> • <?= htmlspecialchars($post['time']) ?></small>
+                      </div>
+                      <?php if ($post['user']['isGroup']): ?>
+                        <span class="badge <?= !empty($post['isAcademic'])?'bg-warning text-dark':'bg-danger' ?>" style="font-size: 0.7rem;">
+                          <?= !empty($post['isAcademic'])?'Acadêmico':'Grupo' ?>
+                        </span>
+                      <?php endif; ?>
                     </div>
-                    <?php if ($post['user']['isGroup']): ?>
-                      <span class="badge <?= !empty($post['isAcademic'])?'bg-warning text-dark':'bg-danger' ?>" style="font-size: 0.7rem;">
-                        <?= !empty($post['isAcademic'])?'Acadêmico':'Grupo' ?>
-                      </span>
-                    <?php endif; ?>
+
+                    <!-- Conteúdo -->
+                    <p class="text-secondary-custom mb-2" style="font-size: 0.85rem;"><?= htmlspecialchars($post['content']) ?></p>
+
+                    <!-- Ações -->
+                    <div class="d-flex justify-content-between align-items-center">
+                      <button class="btn btn-sm btn-outline-secondary" style="font-size: 0.7rem;">
+                        <i class="fas fa-comment me-1"></i><?= (int)$totalMensagens ?> mensagens
+                      </button>
+                      <small class="text-muted"><?= (int)$post['comments'] ?> comentários</small>
+                    </div>
+
                   </div>
-
-                  <!-- Conteúdo -->
-                  <p class="text-secondary-custom mb-2" style="font-size: 0.85rem;"><?= htmlspecialchars($post['content']) ?></p>
-
-                  <!-- Ações -->
-                  <div class="d-flex justify-content-between align-items-center">
-                    <button class="btn btn-sm btn-outline-secondary" style="font-size: 0.7rem;">
-                      <i class="fas fa-comment me-1"></i><?= (int)$totalMensagens ?> mensagens
-                    </button>
-                    <small class="text-muted"><?= (int)$post['comments'] ?> comentários</small>
-                  </div>
-
                 </div>
               </div>
-            </div>
-          <?php endforeach; ?>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </div>
       </section>
 
