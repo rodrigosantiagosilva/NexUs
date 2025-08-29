@@ -271,7 +271,7 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
   <?php else: ?>
     <!-- placeholder sidebar -->
     <nav class="d-none d-md-block bg-light border-end" style="width:220px;padding:1rem;">
-      <h5>TydraPI</h5>
+      <h5>NexUs</h5>
       <ul class="nav flex-column">
         <li class="nav-item"><a class="nav-link" href="#">Início</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Mensagens</a></li>

@@ -11,7 +11,7 @@ if (isset($_SESSION['usuario_id'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TydraPI - Login</title>
+  <title>NexUs - Login</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -32,7 +32,7 @@ if (isset($_SESSION['usuario_id'])) {
   <!-- Navbar -->
   <header class="header">
     <div class="header-container">
-      <a href="/" class="logo">TydraPI</a>
+      <a href="/" class="logo">NexUs</a>
       <nav class="header-nav">
         <a href="/" class="nav-link">Início</a>
         <a href="/sobre" class="nav-link">Sobre</a>
@@ -99,7 +99,7 @@ if (isset($_SESSION['usuario_id'])) {
   <footer class="footer">
     <div class="footer-container">
       <div class="footer-section footer-about">
-        <h3>TydraPI</h3>
+        <h3>NexUs</h3>
         <p>Rede social escolar de conexões instantâneas que prioriza conversas autênticas e interações significativas.</p>
         <div class="social-icons">
           <a href="#" class="social-link"><i class="fab fa-github"></i></a>
@@ -136,7 +136,7 @@ if (isset($_SESSION['usuario_id'])) {
     </div>
     
     <div class="copyright">
-      &copy; 2025 TydraPI. Todos os direitos reservados.
+      &copy; 2025 NexUs. Todos os direitos reservados.
     </div>
   </footer>
 
