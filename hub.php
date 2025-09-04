@@ -389,7 +389,7 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
       <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h4 class="mb-0"><i class="fas fa-calendar-check me-2 text-secondary-custom"></i>Meus Eventos</h4>
-          <a href="eventos.php" class="text-danger">Ver todos</a>
+          <a href="explorar.php?tab=eventos" class="text-danger">Ver todos</a>
         </div>
 
         <div class="row g-4">
@@ -398,7 +398,7 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
               <div class="alert alert-info mb-0">
                 <i class="fas fa-info-circle me-2"></i>
                 Você ainda não se inscreveu em nenhum evento.
-                <a href="eventos.php" class="alert-link">Explore os eventos disponíveis</a>.
+                <a href="explorar.php?tab=eventos" class="alert-link">Explore os eventos disponíveis</a>.
               </div>
             </div>
           <?php else: ?>
@@ -414,7 +414,7 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
                     </div>
                     <p class="card-text text-secondary-custom mb-2"><?= e($event['subject']) ?></p>
                     <p class="text-secondary-custom mb-0"><i class="fas fa-calendar-check me-1"></i><?= e($event['date']) ?></p>
-                    <small class="text-muted">Inscrito em: <?= date('d/m/Y', strtotime($event['registration_date'])) ?></small>
+                    <small class="text-secondary-custom">Inscrito em: <?= date('d/m/Y', strtotime($event['registration_date'])) ?></small>
                   </div>
                 </div>
               </div>
@@ -427,7 +427,7 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
       <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h4 class="mb-0"><i class="fas fa-user-plus me-2 text-secondary-custom"></i>Últimos Seguidos</h4>
-          <a href="conexoes.php" class="text-danger">Ver todos</a>
+          <a href="perfil.php" class="text-danger">Ver todos</a>
         </div>
 
         <div class="row g-4">
@@ -436,7 +436,7 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
               <div class="alert alert-info mb-0">
                 <i class="fas fa-info-circle me-2"></i>
                 Você ainda não seguiu nenhum usuário.
-                <a href="descobrir.php" class="alert-link">Encontre novos usuários</a>.
+                <a href="explorar.php?tab=usuarios" class="alert-link">Encontre novos usuários</a>.
               </div>
             </div>
           <?php else: ?>
@@ -454,7 +454,7 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
                     <p class="text-secondary-custom mb-2 truncate-2"><?= e($user['bio']) ?></p>
                     <div class="d-flex justify-content-between align-items-center">
                       <span class="badge badge-seguindo">Seguindo</span>
-                      <small class="text-muted">Desde: <?= date('d/m/Y', strtotime($user['follow_date'])) ?></small>
+                      <small class="text-secondary-custom">Desde: <?= date('d/m/Y', strtotime($user['follow_date'])) ?></small>
                     </div>
                   </div>
                 </div>
@@ -463,45 +463,6 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
           <?php endif; ?>
         </div>
       </section>
-
-      <!-- Matches Ativos -->
-      <section class="mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="mb-0">Matches Ativos</h4>
-          <a href="conversas.php" class="text-danger">Ver todos</a>
-        </div>
-
-        <div class="row g-4">
-          <?php if (empty($activeMatches)): ?>
-            <div class="col-12"><div class="alert alert-secondary mb-0">Nenhuma conversa encontrada.</div></div>
-          <?php else: ?>
-            <?php foreach ($activeMatches as $match): ?>
-              <div class="col-12 col-md-6">
-                <a href="conversa.php?id=<?= e($match['id']) ?>" class="text-decoration-none text-dark">
-                  <div class="card card-custom">
-                    <div class="card-body d-flex align-items-center">
-                      <div class="position-relative me-3">
-                        <img src="<?= e($match['avatar']) ?>" class="rounded-circle" width="50" height="50" alt="avatar">
-                        <?php if (isset($match['status']) && $match['status'] === 'online'): ?>
-                          <span class="bg-success rounded-circle position-absolute" style="width:10px;height:10px;bottom:2px;right:2px;border:2px solid #fff"></span>
-                        <?php endif; ?>
-                      </div>
-                      <div class="flex-fill">
-                        <h6 class="mb-1"><?= e($match['name']) ?> <small class="text-secondary-custom"><?= e($match['time']) ?></small></h6>
-                        <p class="mb-0 text-secondary-custom truncate-2"><?= e($match['lastMessage']) ?></p>
-                      </div>
-                      <?php if ((int)$match['unread'] > 0): ?>
-                        <span class="badge bg-danger ms-3"><?= (int)$match['unread'] ?></span>
-                      <?php endif; ?>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            <?php endforeach; ?>
-          <?php endif; ?>
-        </div>
-      </section>
-
       <!-- Destaques (Mensagens de Grupo) -->
       <?php
       // Lista de grupos já exibidos
@@ -512,7 +473,6 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
       <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h4>Grupos</h4>
-          <a href="#" class="text-danger">Atualizar</a>
         </div>
         <div class="row g-3">
           <?php if (empty($posts)): ?>
@@ -540,6 +500,9 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
                   
                   // Obter contagem de mensagens para este grupo
                   $totalMensagens = $msgsPorGrupo[$grupoId] ?? 0;
+
+
+
               }
               ?>
               <div class="col-12 col-sm-6 col-lg-4">
@@ -565,10 +528,11 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
                     <!-- Ações -->
                     <div class="d-flex justify-content-between align-items-center">
+                      <a href="chat.php?">
                       <button class="btn btn-sm btn-outline-secondary" style="font-size: 0.7rem;">
                         <i class="fas fa-comment me-1"></i><?= (int)$totalMensagens ?> mensagens
                       </button>
-                      <small class="text-muted"><?= (int)$post['comments'] ?> comentários</small>
+                      </a>
                     </div>
 
                   </div>
