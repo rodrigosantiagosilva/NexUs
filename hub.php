@@ -5,6 +5,8 @@ session_start();
 
 // Ajuste o caminho se necessário
 include "functions/hub_functions.php";
+require "functions/comunidades_functions.php";
+$usuarioAtualId = isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 0;
 // Funções para uso em inicio.php
 // Presupõe que você injete um PDO ($pdo) vindo de includes/conexao.php
 // Se seu conexao.php usar outra variável, ajuste ao chamar as funções.
@@ -224,41 +226,43 @@ if (!function_exists('getLastFollowedUsers')) {
     }
 }
 
-if (!function_exists('getGroupPosts')) {
+if (!function_exists('getUserGroups')) {
     /**
-     * Retorna últimas mensagens de grupos para a timeline/destaques
+     * Retorna os grupos do usuário atual
+     * @param PDO $pdo
+     * @param int $userId
+     * @param int $limit
+     * @return array
      */
-    function getGroupPosts(PDO $pdo, int $limit = 8): array {
+    function getUserGroups(PDO $pdo, int $userId, int $limit = 8): array {
         $out = [];
         try {
-            $sql = "SELECT mg.*, g.nome AS grupo_nome, u.nome AS remetente_nome, u.foto AS remetente_foto
-                    FROM mensagens_grupo mg
-                    JOIN grupos g ON mg.grupo_id = g.id
-                    JOIN usuario u ON mg.remetente_id = u.idusuario
-                    ORDER BY mg.data_envio DESC
+            $sql = "SELECT g.*, COUNT(gm.usuario_id) AS total_membros, 
+                           MAX(mg.data_envio) AS ultima_atividade
+                    FROM grupos g
+                    JOIN grupo_membros gm ON g.id = gm.grupo_id
+                    LEFT JOIN mensagens_grupo mg ON g.id = mg.grupo_id
+                    WHERE gm.usuario_id = :uid
+                    GROUP BY g.id
+                    ORDER BY ultima_atividade DESC
                     LIMIT :lim";
             $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
             $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
             $stmt->execute();
+            
             while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $out[] = [
                     'id' => (int)$r['id'],
-                    'user' => [
-                        'name' => $r['grupo_nome'],
-                        'username' => 'grupo' . $r['grupo_id'],
-                        'avatar' => $r['remetente_foto'] ? $r['remetente_foto'] : 'https://i.pravatar.cc/150?u=grp'.$r['grupo_id'],
-                        'isGroup' => true,
-                    ],
-                    'content' => $r['conteudo'],
-                    'time' => (new DateTime($r['data_envio']))->format('d/m H:i'),
-                    'likes' => rand(0, 50),      // sem tabela de likes no dump — placeholder
-                    'comments' => rand(0, 20),   // placeholder
-                    'liked' => false,
-                    'isAcademic' => false,
+                    'name' => $r['nome'],
+                    'description' => $r['descricao'],
+                    'member_count' => (int)$r['total_membros'],
+                    'last_activity' => $r['ultima_atividade'] ? timeAgo($r['ultima_atividade']) : 'Nenhuma atividade',
+                    'created_at' => $r['data_criacao']
                 ];
             }
         } catch (Exception $e) {
-            error_log('getGroupPosts: '.$e->getMessage());
+            error_log('getUserGroups: '.$e->getMessage());
         }
         return $out;
     }
@@ -323,16 +327,8 @@ $upcomingEvents      = getUpcomingEvents($pdo, 8);
 $userRegisteredEvents = getUserRegisteredEvents($pdo, $usuarioAtualId, 3);
 $activeMatches       = getActiveMatches($pdo, $usuarioAtualId, 8);
 $lastFollowedUsers   = getLastFollowedUsers($pdo, $usuarioAtualId, 3);
-$posts               = getGroupPosts($pdo, 8);
+$userGroups          = getUserGroups($pdo, $usuarioAtualId, 8);
 $pendingConnections  = getPendingConnections($pdo, $usuarioAtualId, 6);
-
-// Buscar quantidade de mensagens por grupo
-$sql = "SELECT grupo_id, COUNT(*) as total 
-        FROM mensagens_grupo 
-        GROUP BY grupo_id";
-$stmt = $pdo->query($sql);
-$msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR); 
-// $msgsPorGrupo[grupo_id] = total de mensagens
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -445,7 +441,15 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
                 <div class="card card-custom">
                   <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
-                      <img src="<?= e($user['avatar']) ?>" class="rounded-circle me-3" width="50" height="50" alt="avatar">
+                               <?php
+                                    // Gerar avatar baseado no nome do usuário
+                                    $nome = urlencode($user['name']);
+                                    $cor = substr(md5($user['name']), 0, 6);
+                                    ?>
+                                    <img src="https://ui-avatars.com/api/?name=<?= $nome ?>&background=<?= $cor ?>&color=fff" 
+                                         alt="<?= htmlspecialchars($user['name']) ?>" 
+                                          class="rounded-circle me-3" width="50" height="50" alt="avatar">
+                  
                       <div>
                         <h6 class="mb-0"><?= e($user['name']) ?></h6>
                         <small class="text-secondary-custom">@<?= e($user['username']) ?></small>
@@ -463,76 +467,54 @@ $msgsPorGrupo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
           <?php endif; ?>
         </div>
       </section>
-      <!-- Destaques (Mensagens de Grupo) -->
-      <?php
-      // Lista de grupos já exibidos
-      $gruposExibidos = [];
-      ?>
 
-      <!-- Destaques -->
+      <!-- Meus Grupos -->
       <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4>Grupos</h4>
+          <h4 class="mb-0"><i class="fas fa-users me-2 text-secondary-custom"></i>Meus Grupos</h4>
+          <a href="comunidades.php" class="text-danger">Ver todos</a>
         </div>
+
         <div class="row g-3">
-          <?php if (empty($posts)): ?>
-            <div class="col-12"><div class="alert alert-info mb-0">Nenhuma mensagem de grupo encontrada.</div></div>
+          <?php if (empty($userGroups)): ?>
+            <div class="col-12">
+              <div class="alert alert-info mb-0">
+                <i class="fas fa-info-circle me-2"></i>
+                Você ainda não participa de nenhum grupo.
+                <a href="comunidades.php" class="alert-link">Explore os grupos disponíveis</a>.
+              </div>
+            </div>
           <?php else: ?>
-            <?php foreach ($posts as $post): ?>
-              <?php
-              // Se for grupo
-              if ($post['user']['isGroup']) {
-                  $nomeGrupo = $post['user']['name'];
-                  $grupoId = str_replace('grupo', '', $post['user']['username']); // Extrai o ID do grupo do username
-
-                  // Se já foi exibido, pula
-                  if (in_array($nomeGrupo, $gruposExibidos)) {
-                      continue;
-                  }
-
-                  // Marca como exibido
-                  $gruposExibidos[] = $nomeGrupo;
-
-                  // Gerar avatar se não existir
-                  if (empty($post['user']['avatar'])) {
-                      $post['user']['avatar'] = gerarAvatarGrupo($nomeGrupo);
-                  }
-                  
-                  // Obter contagem de mensagens para este grupo
-                  $totalMensagens = $msgsPorGrupo[$grupoId] ?? 0;
-
-
-
-              }
-              ?>
+            <?php foreach ($userGroups as $grupo): ?>
               <div class="col-12 col-sm-6 col-lg-4">
-                <div class="card card-custom p-2 h-100" style="overflow: hidden; min-height: 180px;">
+                <div class="card card-custom p-2 h-100">
                   <div class="card-body p-2 d-flex flex-column justify-content-between">
                     
                     <!-- Cabeçalho do card -->
                     <div class="d-flex align-items-center mb-2">
-                      <img src="<?= htmlspecialchars($post['user']['avatar']) ?>" class="rounded-circle me-2" width="30" height="30">
+                      <?php
+                        $avatarUrl = gerarAvatarGrupo($grupo['name']);
+                      ?>
+                      <img src="<?= e($avatarUrl) ?>" alt="<?= e($grupo['name']) ?>" class="rounded-circle me-2" width="40" height="40">
                       <div class="flex-fill">
-                        <h6 class="mb-0" style="font-size: 0.9rem;"><?= htmlspecialchars($post['user']['name']) ?></h6>
-                        <small class="text-secondary-custom" style="font-size: 0.75rem;">@<?= htmlspecialchars($post['user']['username']) ?> • <?= htmlspecialchars($post['time']) ?></small>
+                        <h6 class="mb-0" style="font-size: 0.9rem;"><?= e($grupo['name']) ?></h6>
+                        <small class="text-secondary-custom" style="font-size: 0.75rem;"><?= e($grupo['member_count']) ?> membros</small>
                       </div>
-                      <?php if ($post['user']['isGroup']): ?>
-                        <span class="badge <?= !empty($post['isAcademic'])?'bg-warning text-dark':'bg-danger' ?>" style="font-size: 0.7rem;">
-                          <?= !empty($post['isAcademic'])?'Acadêmico':'Grupo' ?>
-                        </span>
-                      <?php endif; ?>
                     </div>
+                    
+                    <!-- Descrição -->
+                    <p class="text-secondary-custom mb-2 p-1" style="font-size: 0.85rem;">
+                      <?= e($grupo['description'] ?? 'Sem descrição') ?>
+                    </p>
 
-                    <!-- Conteúdo -->
-                    <p class="text-secondary-custom mb-2" style="font-size: 0.85rem;"><?= htmlspecialchars($post['content']) ?></p>
+              
 
                     <!-- Ações -->
                     <div class="d-flex justify-content-between align-items-center">
-                      <a href="chat.php?">
-                      <button class="btn btn-sm btn-outline-secondary" style="font-size: 0.7rem;">
-                        <i class="fas fa-comment me-1"></i><?= (int)$totalMensagens ?> mensagens
-                      </button>
+                      <a href="chat.php?grupo_id=<?= e($grupo['id']) ?>" class="btn btn-sm btn-outline-primary" style="font-size: 0.7rem;">
+                        <i class="fas fa-door-open me-1"></i>Acessar
                       </a>
+                      <small class="text-secondary-custom">Criado em <?= date('d/m/Y', strtotime($grupo['created_at'])) ?></small>
                     </div>
 
                   </div>
