@@ -1,13 +1,46 @@
 <?php
 session_start();
 if (isset($_SESSION['usuario_id'])) {
-    header('Location: hub.php');
-    exit();
+  header('Location: hub.php');
+  exit();
 }
 ?>
 
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script>
+  function handleCredentialResponse(response) {
+    fetch("functions/loginProcessGoogle.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credential: response.credential })
+    })
+      .then(res => res.text())
+      .then(data => {
+        console.log("Resposta do servidor:", data);
+
+        if (data.includes("OK")) {
+          window.location.href = "hub.php"; // redireciona se login ok
+        } else {
+          alert("Erro no login com Google: " + data);
+        }
+      });
+  }
+  window.onload = function () {
+    google.accounts.id.initialize({
+      client_id: "736385181163-jkc732t8i71u1h606p9qijpusspf7nml.apps.googleusercontent.com",
+      callback: handleCredentialResponse
+    });
+    google.accounts.id.renderButton(
+      document.getElementById("buttonDiv"),
+      { theme: "filled_black", size: "large", type: "standard", shape: "pill", text: "continue_with", logo_alignment: "left", width: "375" }  // customization attributes
+    );
+    google.accounts.id.prompt(); // also display the One Tap dialog
+  }
+</script>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,17 +49,20 @@ if (isset($_SESSION['usuario_id'])) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
-   <?php if (isset($_SESSION['erro'])): ?>
-      <div class="alert alert-danger">
-          <?= $_SESSION['erro']; unset($_SESSION['erro']); ?>
-      </div>
+  <?php if (isset($_SESSION['erro'])): ?>
+    <div class="alert alert-danger">
+      <?= $_SESSION['erro'];
+      unset($_SESSION['erro']); ?>
+    </div>
   <?php endif; ?>
 
   <?php if (isset($_SESSION['sucesso'])): ?>
-      <div class="alert alert-success">
-          <?= $_SESSION['sucesso']; unset($_SESSION['sucesso']); ?>
-      </div>
+    <div class="alert alert-success">
+      <?= $_SESSION['sucesso'];
+      unset($_SESSION['sucesso']); ?>
+    </div>
   <?php endif; ?>
 
   <!-- Navbar -->
@@ -55,8 +91,7 @@ if (isset($_SESSION['usuario_id'])) {
           <label for="email" class="form-label">Email</label>
           <div class="input-wrapper">
             <span class="input-icon"><i class="fas fa-envelope"></i></span>
-            <input type="email" id="email" name="email" placeholder="seu@email.com"
-                   class="form-input" required>
+            <input type="email" id="email" name="email" placeholder="seu@email.com" class="form-input" required>
           </div>
         </div>
 
@@ -65,7 +100,7 @@ if (isset($_SESSION['usuario_id'])) {
           <div class="input-wrapper">
             <span class="input-icon"><i class="fas fa-lock"></i></span>
             <input type="password" id="password" name="password" placeholder="••••••••"
-                   class="form-input password-input" required>
+              class="form-input password-input" required>
             <button type="button" class="toggle-password"><i class="fas fa-eye"></i></button>
           </div>
         </div>
@@ -79,14 +114,16 @@ if (isset($_SESSION['usuario_id'])) {
           </div>
           <a href="/forgot-password" class="forgot-link">Esqueceu a senha?</a>
         </div>
-      
 
-           <button type="submit" class="btn-submit">
+
+        <button type="submit" class="btn-submit">
           Entrar
           <span class="btn-icon"><i class="fas fa-arrow-right"></i></span>
         </button>
       </form>
-    
+
+      <div id="buttonDiv" class="register-text"></div>
+
 
       <div class="register-text">
         Não tem uma conta?
@@ -100,7 +137,8 @@ if (isset($_SESSION['usuario_id'])) {
     <div class="footer-container">
       <div class="footer-section footer-about">
         <h3>NexUs</h3>
-        <p>Rede social escolar de conexões instantâneas que prioriza conversas autênticas e interações significativas.</p>
+        <p>Rede social escolar de conexões instantâneas que prioriza conversas autênticas e interações significativas.
+        </p>
         <div class="social-icons">
           <a href="#" class="social-link"><i class="fab fa-github"></i></a>
           <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
@@ -108,7 +146,7 @@ if (isset($_SESSION['usuario_id'])) {
           <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
         </div>
       </div>
-      
+
       <div class="footer-section footer-nav">
         <h3>Navegação</h3>
         <ul class="footer-links">
@@ -118,7 +156,7 @@ if (isset($_SESSION['usuario_id'])) {
           <li class="footer-link"><a href="/contato">Contato</a></li>
         </ul>
       </div>
-      
+
       <div class="footer-section footer-legal">
         <h3>Legal</h3>
         <ul class="footer-links">
@@ -126,7 +164,7 @@ if (isset($_SESSION['usuario_id'])) {
           <li class="footer-link"><a href="/privacy">Política de Privacidade</a></li>
           <li class="footer-link"><a href="/cookies">Cookies</a></li>
         </ul>
-        
+
         <div class="contact-info">
           <h3>Contato</h3>
           <p>Email: <a href="mailto:contato@tydrapi.com">contato@tydrapi.com</a></p>
@@ -134,7 +172,7 @@ if (isset($_SESSION['usuario_id'])) {
         </div>
       </div>
     </div>
-    
+
     <div class="copyright">
       &copy; 2025 NexUs. Todos os direitos reservados.
     </div>
@@ -143,10 +181,10 @@ if (isset($_SESSION['usuario_id'])) {
   <script>
     // Script para toggle de password
     document.querySelectorAll('.toggle-password').forEach(button => {
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function () {
         const input = this.parentElement.querySelector('.password-input');
         const icon = this.querySelector('i');
-        
+
         if (input.type === 'password') {
           input.type = 'text';
           icon.classList.replace('fa-eye', 'fa-eye-slash');
