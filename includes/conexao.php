@@ -1,7 +1,7 @@
 <?php
 
 $host = 'localhost';
-$db   = 'teste_banco';
+$db   = 'nexus_banco';
 $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';
