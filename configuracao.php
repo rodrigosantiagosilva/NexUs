@@ -51,7 +51,7 @@ $activeTab = $_GET['tab'] ?? 'account';
         }
     </style>
 </head>
-<body>
+<body data-theme="<?php echo htmlspecialchars($userSettings['appearance']['theme'] ?? 'light'); ?>">
 <?php include 'includes/sidebar.php'?>
     <div class="settings-container content-wrapper">
         <h1 class="settings-title">Configurações</h1>
@@ -232,4 +232,28 @@ $activeTab = $_GET['tab'] ?? 'account';
         </div>
     </div>
 </body>
+<script>
+  
+document.addEventListener("DOMContentLoaded", function() {
+    const body = document.body;
+    const lightBtn = document.getElementById("theme-light");
+    const darkBtn = document.getElementById("theme-dark");
+
+    if (lightBtn) {
+        lightBtn.addEventListener("change", function() {
+            if (this.checked) {
+                body.setAttribute("data-theme", "light");
+            }
+        });
+    }
+
+    if (darkBtn) {
+        darkBtn.addEventListener("change", function() {
+            if (this.checked) {
+                body.setAttribute("data-theme", "dark");
+            }
+        });
+    }
+});
+</script>
 </html>
