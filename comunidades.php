@@ -368,24 +368,24 @@ $eventos = buscarEventos($pdo);
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createGroupModalLabel">Criar Novo Grupo</h5>
+                    <h5 class="modal-title" id="createGroupModalLabel"><b>Criar Novo Grupo</b></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST" action="">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="form-label" for="groupName">Nome do Grupo</label>
-                            <input type="text" class="form-control" id="groupName" name="nome" required>
+                            <label class="form-label" for="groupName" style="color: black;"><b>Nome do Grupo</b></label>
+                            <input type="text" class="form-control"  id="groupName" name="nome" required>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="groupDescription">Descrição</label>
+                            <label class="form-label" for="groupDescription" style="color: black;"><b>Descrição do Grupo</b></label>
                             <textarea class="form-control" id="groupDescription" name="descricao" rows="3" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <input type="hidden" name="action" value="criar_grupo">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Criar Grupo</button>
+                        <button type="submit" class="btn btn-primary"><b>Criar Grupo</b></button>
                     </div>
                 </form>
             </div>

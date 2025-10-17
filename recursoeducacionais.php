@@ -121,7 +121,7 @@ include 'includes/sidebar.php'
                             $icon_color_class = 'icon-yellow';
                     }
                     
-                    // Escapar dados para JavaScript
+
                     $js_url = htmlspecialchars($recurso['url'], ENT_QUOTES, 'UTF-8');
                     $js_title = htmlspecialchars($recurso['titulo'], ENT_QUOTES, 'UTF-8');
                 ?>

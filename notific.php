@@ -72,7 +72,6 @@ include 'includes/header.php';
 
         .content-wrapper {
             align-self: center;
-            margin-left: 260px;
             padding: 20px;
             width: calc(83%);
         }
@@ -81,7 +80,7 @@ include 'includes/header.php';
 
 <body>
     <?php include 'includes/sidebar.php'?>
-    <div class="tydrapi-container py-6 content-wrapper">
+    <div class="py-6 content-wrapper">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h2 fw-bold">Notificações</h1>
 

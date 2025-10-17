@@ -1,3 +1,12 @@
+/* Variáveis de Cor */
+:root {
+    --text-primary: #f0f0f0; /* Branco/Claro para texto principal */
+    --text-secondary: #aaaaaa; /* Cinza claro para texto secundário */
+    --border-color: #333333; /* Cor para bordas e divisores */
+    --red: #ff3b30; /* Vermelho (para suas mensagens e botões de destaque) */
+    --green: #34c759; /* Verde (para indicador online) */
+}
+
 /* Chat Specific Styles */
 .chat-container {
     display: flex;
@@ -19,6 +28,7 @@
     font-size: 22px;
     font-weight: bold;
     border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
 }
 
 .search-container-chat {
@@ -165,6 +175,7 @@
 .chat-header-name {
     font-weight: bold;
     margin-left: 15px;
+    color: var(--text-primary);
 }
 
 .chat-status {
@@ -227,30 +238,37 @@
     flex-direction: column;
 }
 
-.message-sender {
-    align-self: flex-start;
+/* ⬅️ MENSAGENS RECEBIDAS (OUTROS) - ALINHAMENTO À ESQUERDA (Cinza Escuro) */
+.message-receiver {
+    align-self: flex-start; /* Alinhamento à Esquerda */
 }
 
-.message-receiver {
-    align-self: flex-end;
+/* ➡️ MENSAGENS ENVIADAS (SUAS) - ALINHAMENTO À DIREITA (Vermelho) */
+.message-sender {
+    align-self: flex-end; /* Alinhamento à Direita */
 }
 
 .message-content {
     padding: 10px 15px;
-    border-radius: 18px;
+    border-radius: 18px; 
     font-size: 14px;
     position: relative;
 }
 
-.message-sender .message-content {
+/* Estilo para Mensagens RECEBIDAS (Esquerda) */
+.message-receiver .message-content {
     background-color: #333;
-    border-top-left-radius: 4px;
+    /* Ponta no canto superior ESQUERDO */
+    border-top-left-radius: 4px; 
+    color: var(--text-primary);
 }
 
-.message-receiver .message-content {
+/* Estilo para Mensagens ENVIADAS (Direita) */
+.message-sender .message-content {
     background-color: var(--red);
+    /* Ponta no canto superior DIREITO */
     border-top-right-radius: 4px;
-    color: white;
+    color: white; 
 }
 
 .message-time {
@@ -260,8 +278,8 @@
     align-self: flex-end;
 }
 
-.message-receiver .message-time {
-    color: #ddd;
+.message-sender .message-time {
+    color: #ddd; /* Um cinza mais claro para o timestamp na bolha vermelha */
 }
 
 /* Message Input Area */
