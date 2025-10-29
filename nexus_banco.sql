@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 29/08/2025 às 13:27
+-- Tempo de geração: 14/09/2025 às 20:24
 -- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.1.25
+-- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -443,12 +443,13 @@ CREATE TABLE `notificacoes` (
 
 CREATE TABLE `usuario` (
   `idusuario` int(10) UNSIGNED NOT NULL,
-  `matricula` varchar(20) NOT NULL,
+  `google_id` varchar(255) DEFAULT NULL,
+  `matricula` varchar(50) DEFAULT NULL,
   `idade` tinyint(3) UNSIGNED NOT NULL,
   `foto` varchar(255) DEFAULT NULL,
   `email` varchar(100) NOT NULL,
   `nome` varchar(80) NOT NULL,
-  `senha` varchar(255) NOT NULL,
+  `senha` varchar(255) DEFAULT NULL,
   `data_criacao` datetime NOT NULL DEFAULT current_timestamp(),
   `status` enum('ativo','inativo') NOT NULL DEFAULT 'ativo',
   `criado_em` datetime NOT NULL DEFAULT current_timestamp(),
@@ -460,23 +461,24 @@ CREATE TABLE `usuario` (
 -- Despejando dados para a tabela `usuario`
 --
 
-INSERT INTO `usuario` (`idusuario`, `matricula`, `idade`, `foto`, `email`, `nome`, `senha`, `data_criacao`, `status`, `criado_em`, `atualizado_em`, `admin`) VALUES
-(1, 'ADM001', 30, NULL, 'admin@email.com', 'Administrador do Sistema', '$2y$10$ExemploDeHashAdmin', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 1),
-(2, '2023001', 20, NULL, 'aluno1@email.com', 'João Silva', '$2y$10$ExemploDeHash123', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
-(3, '2023002', 21, NULL, 'aluno2@email.com', 'Maria Oliveira', '$2y$10$ExemploDeHash456', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
-(4, '2023003', 22, NULL, 'aluno3@email.com', 'Carlos Pereira', '$2y$10$ExemploDeHash789', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
-(5, '2023004', 19, NULL, 'aluno4@email.com', 'Ana Santos', '$2y$10$ExemploDeHashABC', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
-(6, '2023005', 23, NULL, 'aluno5@email.com', 'Pedro Costa', '$2y$10$ExemploDeHashDEF', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
-(7, '2023006', 20, NULL, 'aluno6@email.com', 'Juliana Almeida', '$2y$10$ExemploDeHashGHI', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
-(8, '2023007', 21, NULL, 'aluno7@email.com', 'Fernando Lima', '$2y$10$ExemploDeHashJKL', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
-(9, '2023008', 22, NULL, 'aluno8@email.com', 'Mariana Ribeiro', '$2y$10$ExemploDeHashMNO', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
-(10, '2023009', 19, NULL, 'aluno9@email.com', 'Ricardo Gomes', '$2y$10$ExemploDeHashPQR', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
-(11, 'U20256959', 0, NULL, 'mario.junior2@alunos.sc.senac.br', 'Mario Gonçalves', '$2y$10$iq7qXkniq8n0aE9m1xeEBeZHr/O.73LmsyHODFSKCv3HfMHvlz4Hm', '2025-07-04 09:12:24', 'ativo', '2025-07-04 09:12:24', '2025-08-07 08:34:35', 0),
-(12, 'U20253258', 0, NULL, 'mario@gmail.com', 'Mario Gonzales', '$2y$10$sC/U0Gtqw.btaL/WdkDeKeWahILaF/8zWB8tCAejE3wd0gkMkH6rC', '2025-08-08 08:05:22', 'ativo', '2025-08-08 08:05:22', '2025-08-08 08:05:22', 0),
-(13, 'U20250455', 0, NULL, 'rodrigo@gmail.com', 'rodrigo', '$2y$10$NeSV2SVAOQe7cJ9Wa/u6ienGrqDeQsXjfl9ViNAl3baiG4.NWFAk.', '2025-08-21 13:35:52', 'ativo', '2025-08-21 13:35:52', '2025-08-21 13:35:52', 0),
-(14, '2023010', 24, NULL, 'pedro.rocha@email.com', 'Pedro Rocha', '$2y$10$ExemploDeHash123', '2025-08-25 16:49:06', 'ativo', '2025-08-25 16:49:06', '2025-08-25 16:49:06', 0),
-(15, '2023011', 22, NULL, 'ana.paula@email.com', 'Ana Paula', '$2y$10$ExemploDeHash456', '2025-08-25 16:49:06', 'ativo', '2025-08-25 16:49:06', '2025-08-25 16:49:06', 0),
-(16, '2023012', 23, NULL, 'carlos.eduardo@email.com', 'Carlos Eduardo', '$2y$10$ExemploDeHash789', '2025-08-25 16:49:06', 'ativo', '2025-08-25 16:49:06', '2025-08-25 16:49:06', 0);
+INSERT INTO `usuario` (`idusuario`, `google_id`, `matricula`, `idade`, `foto`, `email`, `nome`, `senha`, `data_criacao`, `status`, `criado_em`, `atualizado_em`, `admin`) VALUES
+(1, NULL, 'ADM001', 30, NULL, 'admin@email.com', 'Administrador do Sistema', '$2y$10$ExemploDeHashAdmin', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 1),
+(2, NULL, '2023001', 20, NULL, 'aluno1@email.com', 'João Silva', '$2y$10$ExemploDeHash123', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
+(3, NULL, '2023002', 21, NULL, 'aluno2@email.com', 'Maria Oliveira', '$2y$10$ExemploDeHash456', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
+(4, NULL, '2023003', 22, NULL, 'aluno3@email.com', 'Carlos Pereira', '$2y$10$ExemploDeHash789', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
+(5, NULL, '2023004', 19, NULL, 'aluno4@email.com', 'Ana Santos', '$2y$10$ExemploDeHashABC', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
+(6, NULL, '2023005', 23, NULL, 'aluno5@email.com', 'Pedro Costa', '$2y$10$ExemploDeHashDEF', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
+(7, NULL, '2023006', 20, NULL, 'aluno6@email.com', 'Juliana Almeida', '$2y$10$ExemploDeHashGHI', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
+(8, NULL, '2023007', 21, NULL, 'aluno7@email.com', 'Fernando Lima', '$2y$10$ExemploDeHashJKL', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
+(9, NULL, '2023008', 22, NULL, 'aluno8@email.com', 'Mariana Ribeiro', '$2y$10$ExemploDeHashMNO', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
+(10, NULL, '2023009', 19, NULL, 'aluno9@email.com', 'Ricardo Gomes', '$2y$10$ExemploDeHashPQR', '2025-05-30 09:12:35', 'ativo', '2025-05-30 09:12:35', '2025-05-30 09:12:35', 0),
+(11, NULL, 'U20256959', 0, NULL, 'mario.junior2@alunos.sc.senac.br', 'Mario Gonçalves', '$2y$10$iq7qXkniq8n0aE9m1xeEBeZHr/O.73LmsyHODFSKCv3HfMHvlz4Hm', '2025-07-04 09:12:24', 'ativo', '2025-07-04 09:12:24', '2025-08-07 08:34:35', 0),
+(12, NULL, 'U20253258', 0, NULL, 'mario@gmail.com', 'Mario Gonzales', '$2y$10$sC/U0Gtqw.btaL/WdkDeKeWahILaF/8zWB8tCAejE3wd0gkMkH6rC', '2025-08-08 08:05:22', 'ativo', '2025-08-08 08:05:22', '2025-08-08 08:05:22', 0),
+(13, NULL, 'U20250455', 0, NULL, 'rodrigo@gmail.com', 'rodrigo', '$2y$10$NeSV2SVAOQe7cJ9Wa/u6ienGrqDeQsXjfl9ViNAl3baiG4.NWFAk.', '2025-08-21 13:35:52', 'ativo', '2025-08-21 13:35:52', '2025-08-21 13:35:52', 0),
+(14, NULL, '2023010', 24, NULL, 'pedro.rocha@email.com', 'Pedro Rocha', '$2y$10$ExemploDeHash123', '2025-08-25 16:49:06', 'ativo', '2025-08-25 16:49:06', '2025-08-25 16:49:06', 0),
+(15, NULL, '2023011', 22, NULL, 'ana.paula@email.com', 'Ana Paula', '$2y$10$ExemploDeHash456', '2025-08-25 16:49:06', 'ativo', '2025-08-25 16:49:06', '2025-08-25 16:49:06', 0),
+(16, NULL, '2023012', 23, NULL, 'carlos.eduardo@email.com', 'Carlos Eduardo', '$2y$10$ExemploDeHash789', '2025-08-25 16:49:06', 'ativo', '2025-08-25 16:49:06', '2025-08-25 16:49:06', 0),
+(18, NULL, NULL, 0, NULL, 'inacioviniciusgabriel@gmail.com', 'Vinícius Inacio', NULL, '2025-09-14 15:23:11', 'ativo', '2025-09-14 15:23:11', '2025-09-14 15:23:11', 0);
 
 -- --------------------------------------------------------
 
@@ -803,7 +805,7 @@ ALTER TABLE `notificacoes`
 -- AUTO_INCREMENT de tabela `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idusuario` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `idusuario` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de tabela `usuario_aparencia`
