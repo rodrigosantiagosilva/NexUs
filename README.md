@@ -8,7 +8,7 @@ Um repositório do projeto **NexUs**. Este README traz uma visão geral do proje
 
 NexUs é uma aplicação criada para resolver e facilitar integrações e fluxos de trabalho entre sistemas, fornecendo uma base modular, escalável e de fácil manutenção.
 
-O propósito principal do software é:
+O propósito principal do software é:  
 - Automatizar processos e integrações entre serviços.  
 - Centralizar e padronizar comunicação entre APIs/sistemas.  
 - Servir como ponto de partida para extensões e integrações futuras.  
@@ -43,11 +43,7 @@ Atualize essa seção para refletir a organização real do projeto NexUs.
 ## Tecnologias utilizadas
 
 - **Linguagens:** PHP, JavaScript  
-- **Frameworks e bibliotecas:** Laravel (backend), Node.js, Express ou bibliotecas front-end como React/Vue (se aplicável)  
-- **Banco de dados:** MySQL ou PostgreSQL  
-- **Ferramentas:** Composer, npm, Docker, Git, GitHub Actions  
-- **Testes:** PHPUnit, Jest  
-- **Outros:** axios, Sequelize, Eloquent ORM  
+- **Frameworks e bibliotecas:** Bootstrap, Tailwind CSS  
 
 ---
 
@@ -70,4 +66,3 @@ Pull requests são bem-vindos. Abra PRs com descrições claras e testes quando 
 ### Licença
 
 Este projeto está licenciado sob a **MIT License**.  
-
